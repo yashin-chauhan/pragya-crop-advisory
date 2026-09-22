@@ -8,7 +8,7 @@
 [![Architecture](https://img.shields.io/badge/Architecture-RESTful_API-brightgreen)](https://restfulapi.net/)
 [![Domain](https://img.shields.io/badge/Domain-AgriTech_&_NGO-orange)](https://pragya.org/about-us)
 [![Localization](https://img.shields.io/badge/Localization-Hindi_|_English-blue)](https://pragya.org/)
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red)](#-notice)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red)](#-license--notice)
 
 ---
 
@@ -84,60 +84,55 @@ flowchart TD
 
 ---
 
-## 🌾 Domain & Module Breakdown
+## 🧩 Core Platform Components
 
-The system organizes agricultural intelligence into specialized domain entities:
+| Subsystem | Primary Tech Stack | Description |
+|---|---|---|
+| **Backend REST API** | Laravel 10.x, PHP 8.1+, MySQL | High-throughput RESTful API delivering localized JSON payloads with multi-table relational joins. |
+| **Mobile Application** | Cross-Platform / Native Mobile | Native farmer mobile app with offline advisory caching, vernacular UI, and dynamic tab navigation. |
+| **Web Portal** | Core PHP 8, Responsive CSS | Desktop knowledge portal utilized by field agronomists in village kiosks and training centers. |
+| **Dynamic Taxonomy** | Eloquent ORM, MySQL | Dynamic category and navigation heading engine decoupling mobile layout from app releases. |
 
-```mermaid
-classDiagram
-    class CropCategory {
-        +String type_code
-        +String type_name
-        +String hindi_name
-        +String image
-    }
+---
 
-    class Crop {
-        +Int id
-        +String crop_id
-        +String crop_name
-        +String croptype_code
-        +String lang
-        +String image
-    }
+## 🛡️ Key Engineering Highlights
 
-    class AgronomyAdvisory {
-        +String crop_id
-        +String lang
-        +ClimateDetails climate
-        +SoilDetails soil
-        +VarietyList varieties
-        +LandPreparation land
-        +SeedTreatment treatment
-        +SowingDetails sowing
-        +NutrientDosage nutrients
-        +IrrigationStages irrigation
-        +HarvestingGuidelines harvest
-    }
+### 1. Composite Relational Joins for Plant Protection
+Crop disease and pest management requires linking symptoms (`rb2_plant_disease_pest`) with actionable treatment measures (`rb2_plant_measure`). The backend executes multi-table composite joins, bundling complex remedies into unified single-request payloads to minimize mobile data roundtrips on rural 2G/3G networks.
 
-    class PlantProtection {
-        +String crop_id
-        +String category (disease / pest_control)
-        +String symptom
-        +List~ActionMeasure~ measures
-    }
+### 2. Strict Bilingual Localization Invariants
+All endpoints enforce strict locale boundaries (`['english', 'hindi']`), mapping queries dynamically to language-partitioned database tables while ensuring Devanagari Unicode (`utf8mb4`) fidelity.
 
-    class DynamicHeading {
-        +Int id
-        +String name
-        +String tab_key
-        +String lang
-    }
+### 3. Dynamic Taxonomy Decoupling
+By abstracting navigation headers into dynamic database models, agricultural extension teams can reorder, add, or refine advisory sections without requiring app store updates.
 
-    CropCategory "1" -- "*" Crop : categorizes
-    Crop "1" -- "1" AgronomyAdvisory : provides guidance
-    Crop "1" -- "*" PlantProtection : protects against
-```
+### 4. Global Catch-All Fallback Invariant
+All unmapped routes return structured JSON error envelopes, preventing HTML stack traces on mobile clients during unexpected API calls.
+
+---
+
+## 📚 Technical Documentation Index
+
+Explore the comprehensive technical design documents:
+
+- 🏛️ **[System Architecture](ARCHITECTURE.md)** — In-depth component breakdowns and communication patterns
+- ⚙️ **[Tech Stack Rationale](TECH_STACK.md)** — Architectural justification for chosen technologies
+- 📊 **[Database ERD](diagrams/database-erd.md)** — Complete Entity Relationship Diagram across all `rb2_*` tables
+- 🏗️ **[System Architecture Diagram](diagrams/system-architecture.md)** — Visual topology of ingress, backend, and storage
+- 🔄 **[Crop Lifecycle Flow](diagrams/crop-lifecycle-flow.md)** — End-to-end 12-stage agricultural decision tree
+- 🚀 **[Deployment Topology](diagrams/deployment-topology.md)** — Nginx, PHP-FPM, MySQL, and Cloudflare configuration
+- 🌾 **[Agronomy Domain Model](docs/domain/agronomy-model.md)** — 12+ scientific agronomy stages and data models
+- 🌿 **[Crop Taxonomy](docs/domain/crop-taxonomy.md)** — Crop classification, categories, and bilingual catalogs
+- 🐛 **[Pest & Disease IPM](docs/domain/pest-disease-ipm.md)** — Symptom-to-measure diagnostic linkage
+- 🌦️ **[Climate & Weather Engine](docs/domain/climate-weather-engine.md)** — Climatic baselines and rainfall guidance
+- 🔌 **[API Design Standards](docs/engineering/api-design.md)** — REST contracts, response envelopes, and error handling
+- 🌐 **[Bilingual Localization](docs/engineering/bilingual-localization.md)** — Language routing and Devanagari character handling
+- 🔗 **[Composite Relational Joins](docs/engineering/composite-relational-joins.md)** — Multi-table query aggregation architecture
+- 🛠️ **[Deployment Guide](docs/engineering/deployment.md)** — Nginx virtual host, PHP-FPM pool, and release commands
+- 📱 **[Product Overview](docs/product/overview.md)** — Product vision and user personas
+- 📲 **[Mobile App Specifications](docs/product/mobile-app.md)** — User flows and screen contracts
+- 🌐 **[Web Portal Specifications](docs/product/web-portal.md)** — Field officer desktop portal design
+- 📑 **[Dynamic Advisory Taxonomy](docs/product/advisory-taxonomy.md)** — Database-driven mobile UI navigation engine
 
 ---
 
@@ -246,19 +241,6 @@ classDiagram
 
 ---
 
-## ⚡ Technical Decisions & Engineering Highlights
-
-### 1. Bilingual Data Normalization Layer
-Agricultural datasets in legacy databases often suffer from inconsistent language labeling. The API layer enforces strict validation arrays (`['english', 'hindi']` and `['en', 'hi']`), shielding mobile clients from corrupt or missing locale queries.
-
-### 2. Composite Join Aggregation for Plant Protection
-Crop disease and pest management requires relating disease symptoms (`rb2_plant_disease_pest`) with specific actionable treatment measures (`rb2_plant_measure`). Instead of requiring multiple mobile HTTP roundtrips, the backend executes relational joins on composite keys (`count`, `crop_id`, `category`, `lang`) and bundles them into a unified payload (`data`, `data2`, `data3`).
-
-### 3. Dynamic Heading Decoupling
-Agricultural advisory modules evolve based on seasonal campaigns (e.g., emergency drought advisories). By serving dynamic navigation headers via the `Heading` Eloquent model, frontend navigation menus can be reordered or updated without re-releasing the mobile app bundle to the Google Play Store.
-
----
-
 ## 🗄️ Relational Database Schema Overview
 
 | Table Name | Entity Description | Key Fields |
@@ -289,9 +271,9 @@ Agricultural advisory modules evolve based on seasonal campaigns (e.g., emergenc
 
 - **GitHub:** [@yashin-chauhan](https://github.com/yashin-chauhan)
 - **LinkedIn:** [Yashin Chauhan](https://www.linkedin.com/)
-- **RentKhata Repository:** [yashin-chauhan/rentkhata](https://github.com/yashin-chauhan/rentkhata)
+- **RentKhata Showcase:** [yashin-chauhan/rentkhata](https://github.com/yashin-chauhan/rentkhata)
 
 ---
 
-## 📄 License
-This architecture and documentation showcase is licensed under the [MIT License](LICENSE). The underlying proprietary assets and database remain property of the respective organization.
+## 📄 License & Notice
+This architecture and documentation showcase is licensed under the [MIT License](LICENSE). The underlying production deployment and client assets remain proprietary.
