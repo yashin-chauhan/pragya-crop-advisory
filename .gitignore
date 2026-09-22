@@ -1,0 +1,20 @@
+# OS Metadata & IDEs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment & Logs
+.env
+.env.backup
+.env.production
+*.log
+
+# Dependencies
+node_modules/
+vendor/
