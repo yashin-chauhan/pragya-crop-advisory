@@ -12,8 +12,8 @@
 
 ---
 
-## 📌 Notice
-*This is a public technical showcase repository documenting the architecture, domain design, and technical decisions of the **Pragya Crop Advisory Platform**. The production deployment and core client assets remain proprietary.*
+## 📌 Scope of Work & Attribution Notice
+*This is a public technical showcase repository documenting the architecture, domain design, and API engineering of the **Pragya Crop Advisory REST API (`pragya-api`)** developed by the author. The underlying agricultural dataset and legacy PHP web portal pre-existed within Pragya NGO's infrastructure; the author's work specifically encompassed architecting and building the standalone Laravel REST API backend to modernize and expose this legacy data for their new mobile application.*
 
 ---
 
@@ -46,7 +46,7 @@ Developed for **[Pragya NGO](https://pragya.org/about-us)** (an international no
 flowchart TD
     subgraph Clients["📱 Client & Consumer Layer"]
         MOB["📱 Farmer Mobile Application (Android / iOS)"]
-        WEB["🌐 Field Officer Web Portal (PHP Legacy)"]
+        WEB["🌐 Field Officer Web Portal (Pre-Existing PHP)"]
     end
 
     subgraph Gateway["🛡️ Gateway & Security Layer"]
@@ -54,7 +54,7 @@ flowchart TD
         AUTH["Sanctum Token Layer (Optional Auth)"]
     end
 
-    subgraph CoreEngine["⚙️ Laravel 10 API Core Engine"]
+    subgraph CoreEngine["⚙️ Laravel 10 API Core Engine (Engineered by Author)"]
         ROUTER["API Router (/api/v1)"]
         CTRL["HomeController (Agronomy Aggregator)"]
         
@@ -67,7 +67,7 @@ flowchart TD
         end
     end
 
-    subgraph Storage["🗄️ Relational Database (MySQL)"]
+    subgraph Storage["🗄️ Pre-Existing Relational Database (MySQL)"]
         T_CROP["rb2_crop / rb2_croptype"]
         T_AGRI["rb2_climate / rb2_soil / rb2_variety / rb2_land"]
         T_STAGE["rb2_sowing (1 & 2) / rb2_nutrient (1 & 2) / rb2_irrigation"]
@@ -86,12 +86,13 @@ flowchart TD
 
 ## 🧩 Core Platform Components
 
-| Subsystem | Primary Tech Stack | Description |
-|---|---|---|
-| **Backend REST API** | Laravel 10.x, PHP 8.1+, MySQL | High-throughput RESTful API delivering localized JSON payloads with multi-table relational joins. |
-| **Mobile Application** | Cross-Platform / Native Mobile | Native farmer mobile app with offline advisory caching, vernacular UI, and dynamic tab navigation. |
-| **Web Portal** | Core PHP 8, Responsive CSS | Desktop knowledge portal utilized by field agronomists in village kiosks and training centers. |
-| **Dynamic Taxonomy** | Eloquent ORM, MySQL | Dynamic category and navigation heading engine decoupling mobile layout from app releases. |
+| Subsystem | Scope / Ownership | Primary Tech Stack | Description |
+|---|---|---|---|
+| **Backend REST API (`pragya-api`)** | **Engineered by Author** | Laravel 10.x, PHP 8.1+, MySQL | Standalone RESTful API service transforming legacy relational data into localized JSON contracts for mobile apps. |
+| **Mobile Application** | Client Consumer | Cross-Platform / Native Mobile | Native farmer mobile app with offline advisory caching, vernacular UI, and dynamic tab navigation. |
+| **Legacy Web Portal** | Pre-Existing Client System | Core PHP 8, Responsive CSS | Pre-existing desktop knowledge portal utilized by field agronomists in village kiosks. |
+| **Legacy Agronomy Database** | Pre-Existing Client Schema | MySQL (`rb2_*` tables) | Pre-existing agricultural knowledge base connected and queried by the API. |
+| **Dynamic Taxonomy** | **Engineered by Author** | Eloquent ORM, MySQL | Dynamic category and navigation heading engine decoupling mobile layout from app releases. |
 
 ---
 

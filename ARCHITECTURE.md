@@ -1,18 +1,20 @@
 # 🏛️ Pragya Crop Advisory — System Architecture
 
-This document details the architectural blueprint, component interactions, data boundaries, and execution flows powering the **Pragya Crop Advisory Platform**.
+This document details the architectural blueprint, component interactions, data boundaries, and execution flows powering the **Pragya Crop Advisory REST API (`pragya-api`)**.
+
+> **Scope & Attribution Note:** This architecture document specifically details the **Laravel REST API Service** engineered by the author. The underlying agronomy database schema (`rb2_*`) and legacy PHP web portal pre-existed within Pragya NGO; this API architecture was engineered to modernize, wrap, and expose that legacy data to new mobile clients.
 
 ---
 
 ## 1. Architectural Philosophy
 
-The Pragya Crop Advisory Platform is engineered with a **Decoupled API-First Architecture**. It transforms legacy relational agricultural datasets into high-throughput, localized RESTful JSON services consumed by mobile applications and field web consoles.
+The Pragya Crop Advisory Platform is engineered with a **Decoupled API-First Architecture**. It transforms pre-existing legacy relational agricultural datasets into high-throughput, localized RESTful JSON services consumed by mobile applications and field web consoles.
 
 ```mermaid
 graph TD
     subgraph Clients["📱 Client Layer"]
         A1["Farmer Mobile Application (Android / iOS)"]
-        A2["Field Officer & Agronomist Web Portal (PHP)"]
+        A2["Field Officer & Agronomist Web Portal (Pre-Existing PHP)"]
         A3["Kiosk & Community Center Dashboard"]
     end
 
@@ -22,7 +24,7 @@ graph TD
         B3["CORS & Rate Limiting Middleware"]
     end
 
-    subgraph Backend["⚙️ Laravel 10 Core API Engine"]
+    subgraph Backend["⚙️ Laravel 10 Core API Engine (Engineered by Author)"]
         C1["API Routing & Request Validation"]
         C2["Localization Normalization Layer (Hindi / English)"]
         C3["Agronomy & Lifecycle Query Engine"]
